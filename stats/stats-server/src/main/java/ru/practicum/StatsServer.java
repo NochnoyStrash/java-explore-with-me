@@ -14,4 +14,5 @@ public class StatsServer {
     public static void main(String[] args) {
         SpringApplication.run(StatsServer.class, args);
     }
+
 }
