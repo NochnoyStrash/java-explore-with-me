@@ -8,8 +8,6 @@ import ru.practicum.EndpointHit;
 import ru.practicum.ViewStats;
 import ru.practicum.service.StatsService;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 public class StatsController {
     private StatsService statsService;
-    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @GetMapping("/stats")
     public List<ViewStats>  getStats(@RequestParam String start,
@@ -27,10 +24,7 @@ public class StatsController {
         if (uris == null) {
             uris = new ArrayList<>();
         }
-
-        LocalDateTime startFromString = LocalDateTime.parse(start, format);
-        LocalDateTime endFromString = LocalDateTime.parse(end, format);
-        return statsService.getStats(startFromString, endFromString, uris, unique);
+        return statsService.getStats(start, end, uris, unique);
     }
 
     @PostMapping("/hit")

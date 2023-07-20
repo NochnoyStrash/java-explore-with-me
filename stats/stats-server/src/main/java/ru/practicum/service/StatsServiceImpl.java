@@ -9,12 +9,14 @@ import ru.practicum.model.Stats;
 import ru.practicum.repository.StatsRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
 @AllArgsConstructor
 public class StatsServiceImpl implements  StatsService {
     private StatsRepository statsRepository;
+    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public void saveHit(EndpointHit endpointHit) {
@@ -23,10 +25,12 @@ public class StatsServiceImpl implements  StatsService {
     }
 
     @Override
-    public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
+    public List<ViewStats> getStats(String start, String end, List<String> uris, boolean unique) {
+        LocalDateTime startFromString = LocalDateTime.parse(start, format);
+        LocalDateTime endFromString = LocalDateTime.parse(end, format);
         if (uris.isEmpty()) {
-            return statsRepository.getViewStats(unique, start, end);
+            return statsRepository.getViewStats(unique, startFromString, endFromString);
         }
-        return statsRepository.getViewStatsWithUris(unique, start, end, uris);
+        return statsRepository.getViewStatsWithUris(unique, startFromString, endFromString, uris);
     }
 }
