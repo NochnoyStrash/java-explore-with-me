@@ -49,4 +49,5 @@ public class CatController {
         return categoriesService.getAllCat(from, size);
     }
 
+
 }
