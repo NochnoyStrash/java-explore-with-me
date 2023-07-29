@@ -8,10 +8,9 @@ import ru.practicum.stats.StatsClientTree;
 
 @Service
 public class StatsClient extends StatsClientTree {
-    private static final String SERVER_URI = "http://localhost:9090";
 
     @Autowired
-    public StatsClient(@Value("http://localhost:9090") String url) {
+    public StatsClient(@Value("${stats-server.url}") String url) {
         super(url);
     }
 }
