@@ -26,7 +26,7 @@ public class ErrorHandler {
             RequestNotFoundException.class, CategoryNotFoundException.class, CompilationNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlerObjectNotFound(RuntimeException e) {
-        return new ErrorResponse(e.getMessage(), "3", "Сушность не существует либо указан неправильный ID");
+        return new ErrorResponse(e.getMessage(), HttpStatus.NOT_FOUND.toString(), "Сушность не существует либо указан неправильный ID");
     }
 
     @ExceptionHandler

@@ -1,18 +1,12 @@
-package ru.practicum;
+package ru.practicum.error;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import ru.practicum.events.exceptions.EventValidateException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
 public class ErrorResponse {
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final List<StackTraceElement> errors;
@@ -28,11 +22,5 @@ public class ErrorResponse {
         this.status = status;
         this.reason = reason;
         this.timestamp = LocalDateTime.now();
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handlerObjectConflict(EventValidateException e) {
-        return new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.toString(), "Данные не прошли валидацию");
     }
 }
