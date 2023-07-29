@@ -48,5 +48,4 @@ public class CatController {
                                       @RequestParam(defaultValue = "10") @PositiveOrZero int size) {
         return categoriesService.getAllCat(from, size);
     }
-
 }
