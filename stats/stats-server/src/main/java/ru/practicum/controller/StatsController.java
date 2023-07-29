@@ -33,5 +33,4 @@ public class StatsController {
         statsService.saveHit(endpointHit);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }
