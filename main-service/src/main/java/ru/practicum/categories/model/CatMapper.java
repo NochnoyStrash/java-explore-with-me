@@ -6,6 +6,7 @@ public class CatMapper {
     private CatMapper() {
 
     }
+
     public static Categories getCatFromDto(CatDto dto) {
         return Categories.builder()
                 .name(dto.getName())

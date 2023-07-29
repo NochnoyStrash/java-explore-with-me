@@ -9,18 +9,16 @@ public class UserMapper {
     }
 
     public static User getUserFromDto(UserDto dto) {
-        String[] partsName = dto.getName().split(" ");
         return User.builder()
                 .email(dto.getEmail())
-                .firstName(partsName[0])
-                .lastName(partsName[1])
+                .name(dto.getName())
                 .build();
     }
 
     public static UserDto getUserDtoFromUser(User user) {
         return UserDto.builder()
                 .id(user.getId())
-                .name(user.getFirstName() + " " + user.getLastName())
+                .name(user.getName())
                 .email(user.getEmail())
                 .build();
     }
@@ -28,7 +26,7 @@ public class UserMapper {
     public static UserDtoShort getUserShorts(User user) {
         return UserDtoShort.builder()
                 .id(user.getId())
-                .name(user.getFirstName() + " " + user.getLastName())
+                .name(user.getName())
                 .build();
     }
 

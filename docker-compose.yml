@@ -13,6 +13,19 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_DRIVER_CLASS_NAME=org.postgresql.Driver
+  main-service:
+    build: ./main-service/
+    image: main-service-image
+    container_name: main-service-container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - bd
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://bd:5833/mainDb
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DRIVER_CLASS_NAME=org.postgresql.Driver
   db:
     image: postgres:14-alpine
     container_name: my_app-db
@@ -22,3 +35,12 @@ services:
       - POSTGRES_PASSWORD=root
       - POSTGRES_USER=root
       - POSTGRES_DB=statsDb
+  bd:
+    image: postgres:14-alpine
+    container_name: my_app_dbmain
+    ports:
+       - "5435:5833"
+    environment:
+       - POSTGRES_PASSWORD=root
+       - POSTGRES_USER=root
+       - POSTGRES_DB=mainDb
