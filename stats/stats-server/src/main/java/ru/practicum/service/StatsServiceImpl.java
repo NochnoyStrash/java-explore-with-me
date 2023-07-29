@@ -31,7 +31,7 @@ public class StatsServiceImpl implements  StatsService {
     public List<ViewStats> getStats(String start, String end, List<String> uris, boolean unique) {
         LocalDateTime startFromString = LocalDateTime.parse(start, format);
         LocalDateTime endFromString = LocalDateTime.parse(end, format);
-        if(startFromString.isBefore(endFromString)) {
+        if (startFromString.isBefore(endFromString)) {
             throw new  RuntimeException("дата старта позже чем дата конца");
         }
         if (uris.isEmpty()) {
