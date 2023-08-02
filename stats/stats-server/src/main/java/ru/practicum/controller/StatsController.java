@@ -2,7 +2,6 @@ package ru.practicum.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.EndpointHit;
 import ru.practicum.ViewStats;
@@ -28,9 +27,8 @@ public class StatsController {
     }
 
     @PostMapping("/hit")
-    public ResponseEntity<Void> saveHit(@RequestBody EndpointHit endpointHit) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public void saveHit(@RequestBody EndpointHit endpointHit) {
         statsService.saveHit(endpointHit);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

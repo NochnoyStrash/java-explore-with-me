@@ -25,7 +25,7 @@ public class StatsClientToo {
         return makeAndSendRequest(HttpMethod.GET, STATS_PATH, parameters, null);
     }
 
-    protected <T> ResponseEntity<Object> post(HttpServletRequest userRequest) {
+    protected ResponseEntity<Object> post(HttpServletRequest userRequest) {
         EndpointHit endpointHit = EndpointHit.builder()
                 .app(application)
                 .ip(userRequest.getRemoteAddr())
