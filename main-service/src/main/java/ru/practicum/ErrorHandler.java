@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.categories.exception.CategoryNotFoundException;
 import ru.practicum.compilations.exception.CompilationNotFoundException;
+import ru.practicum.events.exceptions.CommentNotFoundException;
 import ru.practicum.events.exceptions.EventConflictException;
 import ru.practicum.events.exceptions.EventNotFoundException;
 import ru.practicum.events.exceptions.EventValidateException;
@@ -22,7 +23,7 @@ import java.util.Arrays;
 @Slf4j
 public class ErrorHandler {
 
-    @ExceptionHandler({UserNotFoundException.class, EventNotFoundException.class,
+    @ExceptionHandler({UserNotFoundException.class, EventNotFoundException.class, CommentNotFoundException.class,
             RequestNotFoundException.class, CategoryNotFoundException.class, CompilationNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlerObjectNotFound(RuntimeException e) {

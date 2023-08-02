@@ -1,5 +1,6 @@
 package ru.practicum.compilations.dto;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.compilations.model.Compilation;
 import ru.practicum.events.dto.EventMapper;
 import ru.practicum.events.dto.EventShortDto;
@@ -9,10 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CompilationMapper {
-    private CompilationMapper() {
 
-    }
+@UtilityClass
+public class CompilationMapper {
 
     public static Compilation getCompilationFromDto(NewCompilationDto dto) {
         List<Event> events = new ArrayList<>();

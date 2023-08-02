@@ -14,7 +14,7 @@ import java.util.List;
 
 @Getter
 public class ErrorResponse {
-    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final List<StackTraceElement> errors;
     private final String massage;
     private final String status;

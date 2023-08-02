@@ -1,18 +1,22 @@
 package ru.practicum.events.dto;
 
-import ru.practicum.categories.model.CatMapper;
-import ru.practicum.categories.model.dto.CatDto;
+import lombok.experimental.UtilityClass;
+import ru.practicum.categories.model.CategoryMapper;
+import ru.practicum.categories.model.dto.CategoryDto;
+import ru.practicum.events.comments.dto.CommentDto;
+import ru.practicum.events.comments.dto.CommentMapper;
 import ru.practicum.events.enums.State;
 import ru.practicum.events.location.LocationDto;
 import ru.practicum.events.model.Event;
 import ru.practicum.user.dto.UserDtoShort;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
+@UtilityClass
 public class EventMapper {
-    private EventMapper() {
-
-    }
 
     public static Event getEventFromDto(NewEventDto dto) {
         boolean paid = false;
@@ -37,17 +41,21 @@ public class EventMapper {
     }
 
     public static EventDto getEventDto(Event event) {
+        List<CommentDto> commentDtos = new ArrayList<>();
+        if (event.getComments() != null) {
+            commentDtos = event.getComments().stream().map(CommentMapper::mapToCommentDto).collect(Collectors.toList());
+        }
         LocationDto location = LocationDto.builder()
                 .lat(event.getLocation().getLat())
                 .lon(event.getLocation().getLon())
                 .build();
         UserDtoShort userDtoShort = new UserDtoShort(event.getInitiator().getId(),
                 event.getInitiator().getName());
-        CatDto catDto = CatMapper.getDtoFromCat(event.getCategory());
+        CategoryDto categoryDto = CategoryMapper.getDtoFromCategory(event.getCategory());
         return EventDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
-                .category(catDto)
+                .category(categoryDto)
                 .confirmedRequests(event.getConfirmedRequests())
                 .createdOn(event.getCreatedOn())
                 .description(event.getDescription())
@@ -61,10 +69,15 @@ public class EventMapper {
                 .state(event.getState())
                 .title(event.getTitle())
                 .views(event.getViews())
+                .comments(commentDtos)
                 .build();
     }
 
     public static EventShortDto shortEventDto(Event event) {
+        List<CommentDto> commentDtos = new ArrayList<>();
+        if (event.getComments() != null) {
+            commentDtos = event.getComments().stream().map(CommentMapper::mapToCommentDto).collect(Collectors.toList());
+        }
         return EventShortDto.builder()
                 .id(event.getId())
                 .eventDate(event.getEventDate())
@@ -75,6 +88,7 @@ public class EventMapper {
                 .category(event.getCategory())
                 .paid(event.isPaid())
                 .title(event.getTitle())
+                .comments(commentDtos)
                 .build();
     }
 }

@@ -5,6 +5,7 @@ drop table if exists events cascade;
 drop table if exists requests cascade;
 drop table if exists compilations cascade;
 drop table if exists compilations_event cascade;
+drop table if exists comments cascade;
 
 CREATE TABLE IF NOT EXISTS users (
 id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -54,6 +55,13 @@ CREATE TABLE IF NOT EXISTS compilations_event (
 comp_id BIGINT references compilations(id),
 event_id BIGINT references events(id),
 primary key (comp_id, event_id));
+
+CREATE TABLE IF NOT EXISTS comments (
+id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+text varchar(2000) NOT NULL,
+event_id BIGINT references events(id),
+author_id BIGINT references users(id),
+created TIMESTAMP WITHOUT TIME ZONE);
 
 
 

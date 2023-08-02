@@ -9,11 +9,16 @@ import ru.practicum.ViewStats;
 import ru.practicum.categories.exception.CategoryNotFoundException;
 import ru.practicum.categories.model.Categories;
 import ru.practicum.categories.repository.CategoriesRepository;
-import ru.practicum.compilations.client.StatsClient;
+import ru.practicum.client.StatsClient;
+import ru.practicum.events.comments.dto.CommentMapper;
+import ru.practicum.events.comments.dto.NewCommentDto;
+import ru.practicum.events.comments.model.Comment;
+import ru.practicum.events.comments.repository.CommentsRepository;
 import ru.practicum.events.dto.*;
 import ru.practicum.events.enums.State;
 import ru.practicum.events.enums.StateAdmin;
 import ru.practicum.events.enums.StateUser;
+import ru.practicum.events.exceptions.CommentNotFoundException;
 import ru.practicum.events.exceptions.EventConflictException;
 import ru.practicum.events.exceptions.EventNotFoundException;
 import ru.practicum.events.exceptions.EventValidateException;
@@ -51,7 +56,8 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepository;
     private final RequestRepository requestRepository;
     private final StatsClient statsClient;
-    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final CommentsRepository commentsRepository;
+    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
     @Override
@@ -74,6 +80,63 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
+    public Comment addComment(Long eventId, Long authorId, NewCommentDto commentDto) {
+        Event event = getEventById(eventId);
+        if (!event.getState().equals(State.PUBLISHED)) {
+            throw new EventNotFoundException(String.format("Событие с ID =%d  не найдено", eventId));
+        }
+        if (authorId == null) {
+            throw new UserNotFoundException("Комментарии могут оставлять только зарегистрированные пользователи");
+        }
+        User author = userRepository.findById(authorId).orElseThrow(
+                () -> new UserNotFoundException(String.format("Пользователь с ID = %d не найден", authorId)));
+        String text = commentDto.getText();
+        Comment comment = CommentMapper.getComment(text, event, author);
+        return commentsRepository.save(comment);
+    }
+
+    @Override
+    @Transactional
+    public Comment updateComment(Long eventId, Long authorId,  Long commId, NewCommentDto dto) {
+        Event event = getEventById(eventId);
+        if (!event.getState().equals(State.PUBLISHED)) {
+            throw new EventNotFoundException(String.format("Событие с ID =%d  не найдено", eventId));
+        }
+        if (authorId == null) {
+            throw new UserNotFoundException("Комментарии могут оставлять только зарегистрированные пользователи");
+        }
+        Comment comment = commentsRepository.findById(commId).orElseThrow(
+                () -> new CommentNotFoundException(String.format("Комментарий с ID = %d  не найден", commId)));
+        if (!comment.getAuthor().getId().equals(authorId)) {
+            throw new UserNotFoundException("Обновить комментарий может только его создатель");
+        }
+        comment.setText(dto.getText());
+        comment.setCreated(LocalDateTime.now());
+        return commentsRepository.save(comment);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCommentFromAdmin(Long commId) {
+        Comment comment = commentsRepository.findById(commId).orElseThrow(
+                () -> new CommentNotFoundException(String.format("Комментарий с ID = %d  не найден", commId)));
+        commentsRepository.deleteById(commId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteComment(Long authorId, Long eventId, Long commId) {
+        Event event = getEventById(eventId);
+        Comment comment = commentsRepository.findById(commId).orElseThrow(
+                () -> new CommentNotFoundException(String.format("Комментарий с ID = %d  не найден", commId)));
+        if (!comment.getAuthor().getId().equals(authorId)) {
+            throw new UserNotFoundException("Удалить комментарий может только его создатель или администратор");
+        }
+        commentsRepository.deleteById(commId);
+    }
+
+    @Override
     public Event getEventById(Long eventId) {
         return eventRepository.findById(eventId).orElseThrow(
                 () -> new EventNotFoundException(String.format("Событие с ID = %d не найдено", eventId)));
@@ -86,17 +149,15 @@ public class EventServiceImpl implements EventService {
         if (!event.getState().equals(State.PUBLISHED)) {
             throw new EventNotFoundException(String.format("Событие с ID =%d  не найдено", eventId));
         }
-//        String uri = "/events/" + eventId;
-//        ResponseEntity<Object> o = statsClient.getStats(Map.of("start", event.getCreatedOn(),
-//                "end", event.getEventDate(),
-//                "uris", List.of(uri)));
-
-//        event.setViews(view);
         String uri = "/events/" + eventId;
         Long views = getViews(uri, event.getCreatedOn(), LocalDateTime.now());
         event.setViews(views);
-        return eventRepository.save(event);
+        event = eventRepository.save(event);
+        List<Comment> comments = commentsRepository.findByEventId(eventId);
+        event.setComments(comments);
+        return event;
     }
+
 
     @Override
     public List<Event> getEventsForUser(String text, List<Long> categories, Boolean paid, String rangeStart,
@@ -104,12 +165,12 @@ public class EventServiceImpl implements EventService {
         LocalDateTime start = null;
         LocalDateTime end = null;
         if (rangeStart != null) {
-            start = LocalDateTime.parse(rangeStart, format);
+            start = LocalDateTime.parse(rangeStart, FORMAT);
         } else {
             start = LocalDateTime.now();
         }
         if (rangeEnd !=  null) {
-            end = LocalDateTime.parse(rangeEnd, format);
+            end = LocalDateTime.parse(rangeEnd, FORMAT);
         } else {
             end = LocalDateTime.of(9999, 12, 31, 0, 0);
         }
@@ -184,12 +245,12 @@ public class EventServiceImpl implements EventService {
         LocalDateTime start = null;
         LocalDateTime end = null;
         if (rangeStart != null) {
-            start = LocalDateTime.parse(rangeStart, format);
+            start = LocalDateTime.parse(rangeStart, FORMAT);
         } else {
             start = LocalDateTime.now();
         }
         if (rangeEnd !=  null) {
-            end = LocalDateTime.parse(rangeEnd, format);
+            end = LocalDateTime.parse(rangeEnd, FORMAT);
         } else {
             end = LocalDateTime.of(9999, 12, 31, 0, 0);
         }

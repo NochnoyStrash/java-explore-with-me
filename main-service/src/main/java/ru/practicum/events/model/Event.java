@@ -2,14 +2,17 @@ package ru.practicum.events.model;
 
 import lombok.*;
 import ru.practicum.categories.model.Categories;
+import ru.practicum.events.comments.model.Comment;
 import ru.practicum.events.enums.State;
 import ru.practicum.events.location.Location;
 import ru.practicum.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -48,5 +51,6 @@ public class Event {
     private State state;
     private String title;
     private long views;
-
+    @Transient
+    private List<Comment> comments;
 }

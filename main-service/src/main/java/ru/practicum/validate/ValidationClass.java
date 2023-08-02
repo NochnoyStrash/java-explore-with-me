@@ -1,14 +1,13 @@
 package ru.practicum.validate;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.events.dto.NewEventDto;
 import ru.practicum.events.exceptions.EventValidateException;
 
 import java.time.LocalDateTime;
 
+@UtilityClass
 public class ValidationClass {
-    private ValidationClass() {
-
-    }
 
     public static void validateNewEventDto(NewEventDto dto) {
         if (dto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {

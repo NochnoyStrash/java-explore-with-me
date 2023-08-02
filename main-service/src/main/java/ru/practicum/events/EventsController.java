@@ -5,6 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.EndpointHit;
+import ru.practicum.events.comments.dto.CommentDto;
+import ru.practicum.events.comments.dto.CommentMapper;
+import ru.practicum.events.comments.dto.NewCommentDto;
+import ru.practicum.events.comments.model.Comment;
 import ru.practicum.events.dto.*;
 import ru.practicum.events.enums.State;
 import ru.practicum.events.model.Event;
@@ -25,19 +29,50 @@ import java.util.stream.Collectors;
 public class EventsController {
     private final EventService eventService;
     private final StatsClientTree statsClientTree;
-    private static final String application = "ewm-main-service";
+    private static final String APPLICATION = "ewm-main-service";
+    private static final String USER_ID_HEADERS = "X-Sharer-User-Id";
 
     @GetMapping("/events/{id}")
     public EventDto getEventById(@PathVariable long id, HttpServletRequest request) {
         Event event = eventService.getEventByIdPublic(id);
         EndpointHit endpointHit = EndpointHit.builder()
-                .app(application)
+                .app(APPLICATION)
                 .ip(request.getRemoteAddr())
                 .uri(request.getRequestURI())
                 .timestamp(LocalDateTime.now())
                 .build();
             statsClientTree.saveStats(endpointHit);
         return EventMapper.getEventDto(event);
+    }
+
+    @PostMapping("/events/{id}/comments")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentDto addComment(@RequestHeader(USER_ID_HEADERS) Long authorId,
+                                 @PathVariable long id,
+                                 @RequestBody @Valid NewCommentDto dto) {
+        Comment comment = eventService.addComment(id, authorId, dto);
+        return CommentMapper.mapToCommentDto(comment);
+    }
+
+    @PatchMapping("/events/{id}/comments/{commId}")
+    public CommentDto updateComment(@RequestHeader(USER_ID_HEADERS) Long authorId,
+                                 @PathVariable long id,
+                                 @PathVariable long commId,
+                                 @RequestBody @Valid NewCommentDto dto) {
+        Comment comment = eventService.updateComment(id, authorId, commId, dto);
+        return CommentMapper.mapToCommentDto(comment);
+    }
+
+    @DeleteMapping("/admin/comments/{commId}")
+    public void deleteCommentsFromAdmin(@PathVariable Long commId) {
+        eventService.deleteCommentFromAdmin(commId);
+    }
+
+    @DeleteMapping("/events/{id}/comments/{commId}")
+    public void deleteComment(@RequestHeader(USER_ID_HEADERS) Long authorId,
+                              @PathVariable long id,
+                              @PathVariable long commId) {
+        eventService.deleteComment(authorId, id, commId);
     }
 
 
@@ -110,7 +145,7 @@ public class EventsController {
                                         @RequestParam(defaultValue = "10") int size,
                                                HttpServletRequest request) {
         EndpointHit endpointHit = EndpointHit.builder()
-                .app(application)
+                .app(APPLICATION)
                 .ip(request.getRemoteAddr())
                 .uri(request.getRequestURI())
                 .timestamp(LocalDateTime.now()).build();

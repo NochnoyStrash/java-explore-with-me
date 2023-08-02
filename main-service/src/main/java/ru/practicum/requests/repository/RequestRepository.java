@@ -14,7 +14,3 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     List<Request> findByRequesterIdAndEventId(Long requesterId, Long eventId);
 }
-
-//    @Query("UPDATE requests r SET r.status = :status WHERE r.id IN (:ids) AND  r.status = 'PENDING'")
-//    List<Request> updateRequest(@Param("status") StatusRequest status,
-//                                @Param("ids") List<Long> ids);

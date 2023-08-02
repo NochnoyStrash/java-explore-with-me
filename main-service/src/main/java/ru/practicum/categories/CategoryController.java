@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.categories.model.Categories;
-import ru.practicum.categories.model.dto.CatDto;
+import ru.practicum.categories.model.dto.CategoryDto;
 import ru.practicum.categories.service.CategoriesService;
 
 import javax.validation.Valid;
@@ -18,12 +18,12 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("")
 @Validated
-public class CatController {
+public class CategoryController {
     private final CategoriesService categoriesService;
 
     @PostMapping("/admin/categories")
     @ResponseStatus(HttpStatus.CREATED)
-    public Categories saveCat(@RequestBody @Valid CatDto dto) {
+    public Categories saveCat(@RequestBody @Valid CategoryDto dto) {
         return categoriesService.saveCat(dto);
     }
 
@@ -39,7 +39,7 @@ public class CatController {
     }
 
     @PatchMapping("/admin/categories/{catId}")
-    public Categories patchCat(@PathVariable long catId, @Valid @RequestBody CatDto dto) {
+    public Categories patchCat(@PathVariable long catId, @Valid @RequestBody CategoryDto dto) {
         return categoriesService.patchCat(catId, dto);
     }
 

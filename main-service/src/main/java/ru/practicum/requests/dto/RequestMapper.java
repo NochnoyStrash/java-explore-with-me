@@ -1,11 +1,10 @@
 package ru.practicum.requests.dto;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.requests.model.Request;
 
+@UtilityClass
 public class RequestMapper {
-    private RequestMapper() {
-
-    }
 
     public static RequestDto getRequestDto(Request request) {
         return RequestDto.builder()

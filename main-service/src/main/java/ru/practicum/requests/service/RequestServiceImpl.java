@@ -2,6 +2,7 @@ package ru.practicum.requests.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.events.enums.State;
 import ru.practicum.events.exceptions.EventConflictException;
 import ru.practicum.events.exceptions.EventNotFoundException;
@@ -23,11 +24,14 @@ import java.util.Objects;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class RequestServiceImpl implements RequestService {
     private RequestRepository requestRepository;
     private EventRepository eventRepository;
     private UserRepository userRepository;
 
+    @Override
+    @Transactional
     public Request saveRequest(Long userId, Long eventId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(String.format("Пользователь с ID =  %d не найден", userId)));
@@ -67,10 +71,13 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
+    @Override
     public List<Request> getRequestsCurrentUser(Long userId) {
         return requestRepository.findByRequesterId(userId);
     }
 
+    @Override
+    @Transactional
     public Request canselRequest(Long userId, Long requestId) {
         Request request = requestRepository.findById(requestId).orElseThrow(
                 () -> new RequestNotFoundException(String.format("Запрос с таким ID = %d не найден", requestId)));
