@@ -37,6 +37,6 @@ public class EventDto {
     private boolean requestModeration;
     private State state;
     private String title;
-//    private List<CommentDto> comments;
+    private List<CommentDto> comments;
     private long views;
 }

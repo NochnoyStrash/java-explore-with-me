@@ -45,37 +45,37 @@ public class EventsController {
         return EventMapper.getEventDto(event);
     }
 
-//    @PostMapping("/events/{id}/comments")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public CommentDto addComment(@RequestHeader(USER_ID_HEADERS) Long authorId,
-//                                 @PathVariable long id,
-//                                 @RequestBody @Valid NewCommentDto dto) {
-//        Comment comment = eventService.addComment(id, authorId, dto);
-//        return CommentMapper.mapToCommentDto(comment);
-//    }
-//
-//    @PatchMapping("/events/{id}/comments/{commId}")
-//    public CommentDto updateComment(@RequestHeader(USER_ID_HEADERS) Long authorId,
-//                                 @PathVariable long id,
-//                                 @PathVariable long commId,
-//                                 @RequestBody @Valid NewCommentDto dto) {
-//        Comment comment = eventService.updateComment(id, authorId, commId, dto);
-//        return CommentMapper.mapToCommentDto(comment);
-//    }
-//
-//    @DeleteMapping("/admin/comments/{commId}")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void deleteCommentsFromAdmin(@PathVariable Long commId) {
-//        eventService.deleteCommentFromAdmin(commId);
-//    }
-//
-//    @DeleteMapping("/events/{id}/comments/{commId}")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void deleteComment(@RequestHeader(USER_ID_HEADERS) Long authorId,
-//                              @PathVariable long id,
-//                              @PathVariable long commId) {
-//        eventService.deleteComment(authorId, id, commId);
-//    }
+    @PostMapping("/events/{id}/comments")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentDto addComment(@RequestHeader(USER_ID_HEADERS) Long authorId,
+                                 @PathVariable long id,
+                                 @RequestBody @Valid NewCommentDto dto) {
+        Comment comment = eventService.addComment(id, authorId, dto);
+        return CommentMapper.mapToCommentDto(comment);
+    }
+
+    @PatchMapping("/events/{id}/comments/{commId}")
+    public CommentDto updateComment(@RequestHeader(USER_ID_HEADERS) Long authorId,
+                                 @PathVariable long id,
+                                 @PathVariable long commId,
+                                 @RequestBody @Valid NewCommentDto dto) {
+        Comment comment = eventService.updateComment(id, authorId, commId, dto);
+        return CommentMapper.mapToCommentDto(comment);
+    }
+
+    @DeleteMapping("/admin/comments/{commId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCommentsFromAdmin(@PathVariable Long commId) {
+        eventService.deleteCommentFromAdmin(commId);
+    }
+
+    @DeleteMapping("/events/{id}/comments/{commId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteComment(@RequestHeader(USER_ID_HEADERS) Long authorId,
+                              @PathVariable long id,
+                              @PathVariable long commId) {
+        eventService.deleteComment(authorId, id, commId);
+    }
 
 
     @PostMapping("/users/{userId}/events")

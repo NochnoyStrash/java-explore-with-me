@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.categories.exception.CategoryNotFoundException;
 import ru.practicum.compilations.exception.CompilationNotFoundException;
-import ru.practicum.events.exceptions.CommentNotFoundException;
-import ru.practicum.events.exceptions.EventConflictException;
-import ru.practicum.events.exceptions.EventNotFoundException;
-import ru.practicum.events.exceptions.EventValidateException;
+import ru.practicum.events.exceptions.*;
 import ru.practicum.requests.exception.RequestNotFoundException;
 import ru.practicum.requests.exception.RequestValidationException;
 import ru.practicum.user.exception.UserNotFoundException;
@@ -36,7 +33,7 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.toString(), "Данные не прошли валидацию");
     }
 
-    @ExceptionHandler({EventConflictException.class, RequestValidationException.class})
+    @ExceptionHandler({EventConflictException.class, RequestValidationException.class, ValidateCommentException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handlerConflict(RuntimeException e) {
         return new ErrorResponse(e.getMessage(), HttpStatus.CONFLICT.toString(), "Данные не прошли валидацию");
