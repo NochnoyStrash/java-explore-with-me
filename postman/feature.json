@@ -1056,7 +1056,7 @@
 					"                method: method,",
 					"                body: body == null ? \"\" : JSON.stringify(body),",
 					"                header: { \"Content-Type\": \"application/json\",",
-					"                \"X-Sharer-User-Id\" : \"\" + (userId + userPlus)},",
+					"                \"X-Sharer-User-Id\" : \"\" + sum + \"\"},",
 					"            };",
 					"",
 					"            if(verbose) {",
