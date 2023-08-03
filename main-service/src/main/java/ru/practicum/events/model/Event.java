@@ -51,6 +51,6 @@ public class Event {
     private State state;
     private String title;
     private long views;
-//    @Transient
-//    private List<Comment> comments;
+    @Transient
+    private List<Comment> comments;
 }

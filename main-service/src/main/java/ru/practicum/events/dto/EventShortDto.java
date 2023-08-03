@@ -24,6 +24,6 @@ public class EventShortDto {
     private User initiator;
     private boolean paid;
     private String title;
-//    private List<CommentDto> comments;
+    private List<CommentDto> comments;
     private long views;
 }
