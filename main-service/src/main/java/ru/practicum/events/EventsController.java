@@ -64,11 +64,13 @@ public class EventsController {
     }
 
     @DeleteMapping("/admin/comments/{commId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCommentsFromAdmin(@PathVariable Long commId) {
         eventService.deleteCommentFromAdmin(commId);
     }
 
     @DeleteMapping("/events/{id}/comments/{commId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteComment(@RequestHeader(USER_ID_HEADERS) Long authorId,
                               @PathVariable long id,
                               @PathVariable long commId) {

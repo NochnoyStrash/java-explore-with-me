@@ -34,11 +34,11 @@ public interface EventService {
     List<Event> getEventsForUser(String text, List<Long> categories, Boolean paid, String rangeStart,
                                  String rangeEnd, String sort, Boolean onlyAvailable, int from, int size);
 
-    Comment addComment(Long eventId, Long authorId, NewCommentDto commentDto);
-
-    Comment updateComment(Long eventId, Long authorId, Long commId, NewCommentDto dto);
-
-    public void deleteCommentFromAdmin(Long commId);
-
-    public void deleteComment(Long authorId, Long eventId, Long commId);
+//    Comment addComment(Long eventId, Long authorId, NewCommentDto commentDto);
+//
+//    Comment updateComment(Long eventId, Long authorId, Long commId, NewCommentDto dto);
+//
+//    void deleteCommentFromAdmin(Long commId);
+//
+//    void deleteComment(Long authorId, Long eventId, Long commId);
 }
