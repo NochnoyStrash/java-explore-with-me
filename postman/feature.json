@@ -1054,7 +1054,7 @@
 					"                method: method,",
 					"                body: body == null ? \"\" : JSON.stringify(body),",
 					"                header: { \"Content-Type\": \"application/json\",",
-					"                \"X-Sharer-User-Id\" : \"\" + (userId + 2)},",
+					"                \"X-Sharer-User-Id\" : \"\" + ((userId) + (2))},",
 					"            };",
 					"",
 					"            if(verbose) {",
