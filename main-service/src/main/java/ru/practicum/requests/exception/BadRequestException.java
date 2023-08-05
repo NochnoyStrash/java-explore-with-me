@@ -1,4 +1,4 @@
-package ru.practicum;
+package ru.practicum.requests.exception;
 
 public class BadRequestException extends RuntimeException {
     public BadRequestException(String massage) {

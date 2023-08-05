@@ -2,7 +2,7 @@ package ru.practicum.events.model;
 
 import lombok.*;
 import ru.practicum.categories.model.Categories;
-import ru.practicum.events.comments.model.Comment;
+import ru.practicum.comments.model.Comment;
 import ru.practicum.events.enums.State;
 import ru.practicum.events.location.Location;
 import ru.practicum.user.model.User;

@@ -1,7 +1,5 @@
 package ru.practicum.events.service;
 
-import ru.practicum.events.comments.dto.NewCommentDto;
-import ru.practicum.events.comments.model.Comment;
 import ru.practicum.events.dto.*;
 import ru.practicum.events.enums.State;
 import ru.practicum.events.model.Event;
@@ -33,12 +31,4 @@ public interface EventService {
 
     List<Event> getEventsForUser(String text, List<Long> categories, Boolean paid, String rangeStart,
                                  String rangeEnd, String sort, Boolean onlyAvailable, int from, int size);
-
-    Comment addComment(Long eventId, Long authorId, NewCommentDto commentDto);
-
-    Comment updateComment(Long eventId, Long authorId, Long commId, NewCommentDto dto);
-
-    public void deleteCommentFromAdmin(Long commId);
-
-    public void deleteComment(Long authorId, Long eventId, Long commId);
 }
