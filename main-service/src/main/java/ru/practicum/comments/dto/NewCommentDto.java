@@ -1,4 +1,4 @@
-package ru.practicum.events.comments.dto;
+package ru.practicum.comments.dto;
 
 import lombok.*;
 

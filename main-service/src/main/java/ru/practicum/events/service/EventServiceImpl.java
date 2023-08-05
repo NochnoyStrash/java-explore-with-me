@@ -10,15 +10,15 @@ import ru.practicum.categories.exception.CategoryNotFoundException;
 import ru.practicum.categories.model.Categories;
 import ru.practicum.categories.repository.CategoriesRepository;
 import ru.practicum.client.StatsClient;
-import ru.practicum.events.comments.dto.CommentMapper;
-import ru.practicum.events.comments.dto.NewCommentDto;
-import ru.practicum.events.comments.model.Comment;
-import ru.practicum.events.comments.repository.CommentsRepository;
+import ru.practicum.comments.model.Comment;
+import ru.practicum.comments.repository.CommentsRepository;
 import ru.practicum.events.dto.*;
 import ru.practicum.events.enums.State;
 import ru.practicum.events.enums.StateAdmin;
 import ru.practicum.events.enums.StateUser;
-import ru.practicum.events.exceptions.*;
+import ru.practicum.events.exceptions.EventConflictException;
+import ru.practicum.events.exceptions.EventNotFoundException;
+import ru.practicum.events.exceptions.EventValidateException;
 import ru.practicum.events.location.Location;
 import ru.practicum.events.location.LocationRepository;
 import ru.practicum.events.model.Event;
@@ -76,62 +76,7 @@ public class EventServiceImpl implements EventService {
         return eventRepository.save(event);
     }
 
-    @Override
-    @Transactional
-    public Comment addComment(Long eventId, Long authorId, NewCommentDto commentDto) {
-        Event event = getEventById(eventId);
-        if (!event.getState().equals(State.PUBLISHED)) {
-            throw new EventNotFoundException(String.format("Событие с ID =%d  не найдено", eventId));
-        }
-        if (authorId == null) {
-            throw new ValidateCommentException("Комментарии могут оставлять только зарегистрированные пользователи");
-        }
-        User author = userRepository.findById(authorId).orElseThrow(
-                () -> new UserNotFoundException(String.format("Пользователь с ID = %d не найден", authorId)));
-        String text = commentDto.getText();
-        Comment comment = CommentMapper.getComment(text, event, author);
-        return commentsRepository.save(comment);
-    }
 
-    @Override
-    @Transactional
-    public Comment updateComment(Long eventId, Long authorId,  Long commId, NewCommentDto dto) {
-        Event event = getEventById(eventId);
-        if (!event.getState().equals(State.PUBLISHED)) {
-            throw new EventNotFoundException(String.format("Событие с ID =%d  не найдено", eventId));
-        }
-        if (authorId == null) {
-            throw new ValidateCommentException("Комментарии могут оставлять только зарегистрированные пользователи");
-        }
-        Comment comment = commentsRepository.findById(commId).orElseThrow(
-                () -> new CommentNotFoundException(String.format("Комментарий с ID = %d  не найден", commId)));
-        if (!comment.getAuthor().getId().equals(authorId)) {
-            throw new ValidateCommentException("Обновить комментарий может только его создатель");
-        }
-        comment.setText(dto.getText());
-        comment.setCreated(LocalDateTime.now());
-        return commentsRepository.save(comment);
-    }
-
-    @Override
-    @Transactional
-    public void deleteCommentFromAdmin(Long commId) {
-        Comment comment = commentsRepository.findById(commId).orElseThrow(
-                () -> new CommentNotFoundException(String.format("Комментарий с ID = %d  не найден", commId)));
-        commentsRepository.deleteById(commId);
-    }
-
-    @Override
-    @Transactional
-    public void deleteComment(Long authorId, Long eventId, Long commId) {
-        Event event = getEventById(eventId);
-        Comment comment = commentsRepository.findById(commId).orElseThrow(
-                () -> new CommentNotFoundException(String.format("Комментарий с ID = %d  не найден", commId)));
-        if (!comment.getAuthor().getId().equals(authorId)) {
-            throw new ValidateCommentException("Удалить комментарий может только его создатель или администратор");
-        }
-        commentsRepository.deleteById(commId);
-    }
 
     @Override
     public Event getEventById(Long eventId) {
